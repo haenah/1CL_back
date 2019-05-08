@@ -1,39 +1,39 @@
-from rest_framework import permissions, generics, status
-from django.http import JsonResponse
-from .permissions import IsMasterOrBanned
+from rest_framework import permissions, generics
+from .permissions import IsMaster
 from .serializers import (ClubSerializer, CategorySerializer, DeptSerializer)
 from .models import (Club, Category, Dept)
 
 
 # Create your views here.
-class ClubList(generics.GenericAPIView):
+class ClubList(generics.ListCreateAPIView):
+    serializer_class = ClubSerializer
+
+    def get_queryset(self):
+        category = self.request.GET.get('category')
+        dept = self.request.GET.get('department')
+        if category == None and dept == None:
+            return Club.objects.all()
+        elif category == '전체' and dept == '전체':
+            return Club.objects.all()
+        elif category == '전체':
+            return Club.objects.filter(dept=dept)
+        elif dept == '전체':
+            return Club.objects.filter(category=category)
+        elif category != '전체' and dept != '전체':
+            return Club.objects.filter(category=category, dept=dept)
+
     def get(self, request, *args, **kwargs):
-        category = request.GET.get('category')
-        dept = request.GET.get('department')
-        print(category)
-        print(dept)
-        if category==None and dept==None:
-            clubs = Club.objects.all()
-        elif category=='전체' and dept=='전체':
-            clubs = Club.objects.all()
-        elif category=='전체':
-            clubs = Club.objects.filter(dept=dept)
-        elif dept=='전체':
-            clubs = Club.objects.filter(category=category)
-        elif category!='전체' and dept!= '전체':
-            clubs = Club.objects.filter(category=category, dept=dept)
-        serializer = ClubSerializer(clubs, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return self.list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
+        # 여기서 에러남
         serializer.save(master=self.request.user)
-
 
 class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
 
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMasterOrBanned)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMaster)
 
 
 class CategoryList(generics.ListAPIView):
