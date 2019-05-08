@@ -1,20 +1,32 @@
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, status
+from django.http import JsonResponse
 from .permissions import IsMasterOrBanned
 from .serializers import (ClubSerializer, CategorySerializer, DeptSerializer)
 from .models import (Club, Category, Dept)
-from User.models import CustomUser
 
 
 # Create your views here.
-class ClubList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Club.objects.all()
-    serializer_class = ClubSerializer
+class ClubList(generics.GenericAPIView):
+    def get(self, request, *args, **kwargs):
+        category = request.GET.get('category')
+        dept = request.GET.get('department')
+        print(category)
+        print(dept)
+        if category==None and dept==None:
+            clubs = Club.objects.all()
+        elif category=='전체' and dept=='전체':
+            clubs = Club.objects.all()
+        elif category=='전체':
+            clubs = Club.objects.filter(dept=dept)
+        elif dept=='전체':
+            clubs = Club.objects.filter(category=category)
+        elif category!='전체' and dept!= '전체':
+            clubs = Club.objects.filter(category=category, dept=dept)
+        serializer = ClubSerializer(clubs, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
     def perform_create(self, serializer):
         serializer.save(master=self.request.user)
-
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
 
 class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
