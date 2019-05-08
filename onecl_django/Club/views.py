@@ -10,8 +10,6 @@ class ClubList(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         category = request.GET.get('category')
         dept = request.GET.get('department')
-        print(category)
-        print(dept)
         if category==None and dept==None:
             clubs = Club.objects.all()
         elif category=='전체' and dept=='전체':
