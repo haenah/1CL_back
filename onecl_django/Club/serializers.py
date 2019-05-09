@@ -5,7 +5,7 @@ from .models import (Club, Category, Dept)
 class ClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
-        fields = ('id', 'name', 'master', 'category', 'dept')
+        fields = ('id', 'name', 'category', 'dept')
 
     def create(self, validated_data):
         return Club.objects.create(**validated_data)
