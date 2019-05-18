@@ -8,6 +8,7 @@ from User.models import CustomUser
 # Create your views here.
 class ClubList(generics.ListCreateAPIView):
     serializer_class = ClubSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         category = self.request.GET.get('category')
