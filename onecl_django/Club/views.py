@@ -9,6 +9,7 @@ from Join.models import Join
 # Create your views here.
 class ClubList(generics.ListCreateAPIView):
     serializer_class = ClubSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         category = self.request.GET.get('category')

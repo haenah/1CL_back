@@ -3,9 +3,11 @@ from .models import (Club, Category, Dept)
 
 
 class ClubSerializer(serializers.ModelSerializer):
+    master = serializers.ReadOnlyField(source='master.username')
+
     class Meta:
         model = Club
-        fields = ('id', 'name', 'category', 'dept')
+        fields = ('id', 'name', 'category', 'dept', 'master')
 
     def create(self, validated_data):
         return Club.objects.create(**validated_data)
