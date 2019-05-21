@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'User.apps.UserConfig',
     'Club.apps.ClubConfig',
+    'Join.apps.JoinConfig',
     'rest_framework',
     'knox',
     'corsheaders',

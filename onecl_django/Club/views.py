@@ -1,8 +1,9 @@
 from rest_framework import permissions, generics
-from .permissions import IsMaster
+from Permission.permissions import IsMaster
 from .serializers import (ClubSerializer, CategorySerializer, DeptSerializer)
 from .models import (Club, Category, Dept)
 from User.models import CustomUser
+from Join.models import Join
 
 
 # Create your views here.
@@ -28,7 +29,8 @@ class ClubList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         master = CustomUser.objects.get(username=self.request.user.username)
-        serializer.save(master=master)
+        Join.objects.create(user=master, club=serializer.save(master=master), auth_level=3)
+
 
 class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Club.objects.all()
