@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (ClubList, ClubDetail, CategoryList, DeptList)
+from .views import *
 
 urlpatterns = [
     path('', ClubList.as_view()),

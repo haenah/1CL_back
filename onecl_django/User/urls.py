@@ -7,5 +7,5 @@ urlpatterns = [
     path('user/', UserAPI.as_view()),
     path('email/', DuplicateEmailAPI.as_view()),
     path('id/', DuplicateUserIdAPI.as_view()),
-    path('code/', CodeVerificationAPI.as_view()),
+    path('code/', CodeVerificationAPI.as_view())
 ]
