@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'User.apps.UserConfig',
     'Club.apps.ClubConfig',
+    'Image.apps.ImageConfig',
     'rest_framework',
     'knox',
     'corsheaders',
@@ -123,6 +124,9 @@ AUTH_USER_MODEL = 'User.CustomUser'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
