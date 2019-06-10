@@ -7,7 +7,7 @@ class JoinSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Join
-        fields = ('user', 'club', 'auth_level')
+        fields = ('id', 'user', 'club', 'auth_level')
 
     def create(self, validated_data):
         return Join.objects.create(**validated_data)

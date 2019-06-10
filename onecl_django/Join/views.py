@@ -1,5 +1,5 @@
 from rest_framework import permissions, generics
-from Permission.permissions import IsSelf, IsMember, IsExecutive
+
 from .serializers import JoinSerializer
 from Join.models import Join
 from Club.models import Club
@@ -27,14 +27,13 @@ class JoinList(generics.ListCreateAPIView):
         return self.list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        user = CustomUser.objects.get(id=self.request.GET.get('user'))
-        club = Club.objects.get(id=self.request.GET.get('club'))
+        user = CustomUser.objects.get(username=self.request.data['user'])
+        club = Club.objects.get(id=self.request.data['club'])
         Join.objects.create(user=user, club=club)
 
 
 class JoinDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Join.objects.all()
     serializer_class = JoinSerializer
-    permission_classes = (IsSelf, IsExecutive)
 
 
