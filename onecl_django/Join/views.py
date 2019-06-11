@@ -1,4 +1,5 @@
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, status
+from rest_framework.response import Response
 
 from .serializers import JoinSerializer
 from Join.models import Join
@@ -30,6 +31,7 @@ class JoinList(generics.ListCreateAPIView):
         user = CustomUser.objects.get(username=self.request.data['user'])
         club = Club.objects.get(id=self.request.data['club'])
         Join.objects.create(user=user, club=club)
+
 
 
 class JoinDetail(generics.RetrieveUpdateDestroyAPIView):

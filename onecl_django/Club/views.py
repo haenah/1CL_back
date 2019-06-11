@@ -37,17 +37,17 @@ class ClubList(generics.ListCreateAPIView):
 class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
-    permission_classes = (permissions.IsAuthenticated, IsMasterOrReadOnly, )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMasterOrReadOnly, )
 
 
 class CategoryList(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
 
 class DeptList(generics.ListAPIView):
     queryset = Dept.objects.all()
     serializer_class = DeptSerializer
 
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )

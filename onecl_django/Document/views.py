@@ -11,7 +11,7 @@ type , content, title, date, owner, club
 # Create your views here.
 class DocumentList(generics.ListCreateAPIView):
     serializer_class = DocumentSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, DocumentListPermission )
+    permission_classes = (permissions.IsAuthenticated, DocumentListPermission )
 
     def get_queryset(self):
         club = self.request.GET.get('club')
@@ -24,4 +24,4 @@ class DocumentList(generics.ListCreateAPIView):
 class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
-    permission_classes = (DocumentDetailPermission, )
+    permission_classes = (permissions.IsAuthenticated, DocumentDetailPermission, )
