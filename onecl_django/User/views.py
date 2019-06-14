@@ -48,6 +48,7 @@ class DuplicateEmailAPI(generics.GenericAPIView):
 
         global code
         code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        print(code)
 
         subject, from_email, to = '1CL 인증번호 발송 메일입니다.', 'dvmflstm@gmail.com', request.data["email"]
         text_content = '1CL 회원가입 인증번호 : ' + code

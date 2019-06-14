@@ -7,7 +7,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Document
-        fields = ('id', 'title', 'content', 'date', 'type', 'owner', 'club')
+        fields = ('id', 'title', 'content', 'date', 'owner', 'club')
 
     def create(self, validated_data):
         return Document.objects.create(**validated_data)

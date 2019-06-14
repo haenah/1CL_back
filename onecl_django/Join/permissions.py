@@ -16,7 +16,7 @@ class JoinListPermission(permissions.BasePermission):
         join = None
         try:
             join = Join.objects.get(user=user, club=club)
-        except join.DoesNotExist:
+        except Join.DoesNotExist:
             return False
 
         if request.method == 'GET':

@@ -52,3 +52,7 @@ class uploadFileAPI(generics.ListCreateAPIView):
         if club is None:
             return FileModel.objects.all()
         return FileModel.objects.filter(club=club)
+
+class FileDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = FileModel.objects.all()
+    serializer_class = FileUploadSerializer
