@@ -51,8 +51,8 @@ class AuthLevelAPI(generics.ListCreateAPIView):
         return Response(body, status=status.HTTP_200_OK)
 
 
-class ClubListAPI(generics.ListCreateAPIView):
-    serializer_class = JoinSerializer
+class MyClubList(generics.ListCreateAPIView):
+    # serializer_class = JoinSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
@@ -60,8 +60,12 @@ class ClubListAPI(generics.ListCreateAPIView):
         return Join.objects.filter(user=user)
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
+        result = {}
+        user = CustomUser.objects.get(username=self.request.user.username)
+        join_set = Join.objects.filter(user=user)
+        for id in join_set:
+            result += Club.objects.get(id=id)
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class JoinDetail(generics.RetrieveUpdateDestroyAPIView):

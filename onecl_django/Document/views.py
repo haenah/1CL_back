@@ -42,6 +42,6 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, DocumentDetailPermission, )
 
 
-class DocumentTypeList(generics.ListCreateAPIView):
-    def get_queryset(self):
-        return None
+# class DocumentTypeList(generics.ListCreateAPIView):
+#     def get_queryset(self):
+#         club =

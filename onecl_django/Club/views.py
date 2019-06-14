@@ -49,5 +49,4 @@ class CategoryList(generics.ListAPIView):
 class DeptList(generics.ListAPIView):
     queryset = Dept.objects.all()
     serializer_class = DeptSerializer
-
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
