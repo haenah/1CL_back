@@ -5,6 +5,7 @@ from .serializers import ImageUploadSerializer, FileUploadSerializer
 from User.models import CustomUser
 from Club.models import Club
 
+
 class uploadImageAPI(generics.ListCreateAPIView):
     serializer_class = ImageUploadSerializer
     queryset = ImageModel.objects.all()

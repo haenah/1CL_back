@@ -1,7 +1,7 @@
 from rest_framework import permissions, generics
 
 from .serializers import DocumentSerializer
-from .models import Document
+from .models import Document, DocumentType
 from User.models import CustomUser
 from Club.models import Club
 from .permissions import *
@@ -40,3 +40,8 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     permission_classes = (permissions.IsAuthenticated, DocumentDetailPermission, )
+
+
+class DocumentTypeList(generics.ListCreateAPIView):
+    def get_queryset(self):
+        return None
