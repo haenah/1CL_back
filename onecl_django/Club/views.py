@@ -15,7 +15,7 @@ class ClubList(generics.ListCreateAPIView):
     def get_queryset(self):
         category = self.request.GET.get('category')
         dept = self.request.GET.get('department')
-        if category == None and dept == None:
+        if category is None and dept is None:
             return Club.objects.all()
         elif category == '전체' and dept == '전체':
             return Club.objects.all()
