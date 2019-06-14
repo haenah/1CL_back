@@ -19,11 +19,11 @@ class JoinList(generics.ListCreateAPIView):
         auth_level = self.request.GET.get('auth_level')
         if club is None or auth_level is None:
             return Join.objects.all()
-        elif auth_level == 1:
+        elif auth_level == '1':
             return Join.objects.filter(club=club)
-        elif auth_level == 2:
+        elif auth_level == '2':
              Join.objects.filter(club=club, auth_level__gte=2)
-        elif auth_level == 3:
+        elif auth_level == '3':
             return Join.objects.filter(club=club, auth_level=3)
 
     def get(self, request, *args, **kwargs):
@@ -36,11 +36,11 @@ class JoinList(generics.ListCreateAPIView):
 
 
 class AuthLevelAPI(generics.ListCreateAPIView):
-    serializer_class = JoinSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get(self, request, *args, **kwargs):
-        club = request.GET.get('club')
-        user = user = CustomUser.objects.get(username=request.user.username)
+        club = Club.objects.get(id=request.GET.get('club'))
+        user = CustomUser.objects.get(username=request.user.username)
 
         try:
             join = Join.objects.get(user=user, club=club)
@@ -49,6 +49,19 @@ class AuthLevelAPI(generics.ListCreateAPIView):
             return Response(body, status=status.HTTP_200_OK)
         body = {"auth_level": join.auth_level}
         return Response(body, status=status.HTTP_200_OK)
+
+
+class ClubListAPI(generics.ListCreateAPIView):
+    serializer_class = JoinSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+    def get_queryset(self):
+        user = CustomUser.objects.get(username=self.request.user.username)
+        return Join.objects.filter(user=user)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 
 
 class JoinDetail(generics.RetrieveUpdateDestroyAPIView):
