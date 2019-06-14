@@ -6,7 +6,7 @@ from User.models import CustomUser
 from Club.models import Club
 from .permissions import *
 
-type , content, title, date, owner, club
+# type , content, title, date, owner, club
 
 # Create your views here.
 class DocumentList(generics.ListCreateAPIView):

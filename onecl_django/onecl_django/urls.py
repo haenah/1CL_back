@@ -24,6 +24,6 @@ urlpatterns = [
     path('club/', include('Club.urls')),
     path('upload/', include('Image.urls')),
     path('join/', include('Join.urls')),
-    path('documents/', include('Document.urls')),
+    # path('documents/', include('Document.urls')),
     path('api-auth', include('rest_framework.urls'))
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
