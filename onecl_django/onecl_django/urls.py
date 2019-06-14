@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('User.urls')),
     path('club/', include('Club.urls')),
-    path('image/', include('Image.urls')),
+    path('upload/', include('Image.urls')),
     path('join/', include('Join.urls')),
     path('api-auth', include('rest_framework.urls'))
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
