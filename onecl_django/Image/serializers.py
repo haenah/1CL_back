@@ -6,7 +6,7 @@ class ImageUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ImageModel
-        fields = ("id", "image", "club")
+        fields = ("id", "name", "image", "club")
 
     def create(self, validated_data):
         return ImageModel.objects.create(**validated_data)
