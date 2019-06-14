@@ -1,9 +1,10 @@
 from rest_framework import permissions, generics
-from Permission.permissions import IsMaster
+
 from .serializers import (ClubSerializer, CategorySerializer, DeptSerializer)
 from .models import (Club, Category, Dept)
 from User.models import CustomUser
 from Join.models import Join
+from .permissions import IsMasterOrReadOnly
 
 
 # Create your views here.
@@ -36,8 +37,7 @@ class ClubList(generics.ListCreateAPIView):
 class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
-
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMaster)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMasterOrReadOnly, )
 
 
 class CategoryList(generics.ListAPIView):
