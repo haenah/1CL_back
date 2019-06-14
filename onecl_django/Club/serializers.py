@@ -7,7 +7,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ('id', 'name', 'category', 'dept', 'master')
+        fields = ('id', 'name', 'category', 'dept', 'master', 'apply_message')
 
     def create(self, validated_data):
         return Club.objects.create(**validated_data)
@@ -17,6 +17,7 @@ class ClubSerializer(serializers.ModelSerializer):
         instance.master = validated_data.get('master', instance.master)
         instance.category = validated_data.get('category', instance.category)
         instance.dept = validated_data.get('dept', instance.dept)
+        instance.dept = validated_data.get('dept', instance.apply_message)
         instance.save()
         return instance
 

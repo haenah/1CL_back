@@ -12,6 +12,8 @@ class JoinListPermission(permissions.BasePermission):
             club = Club.objects.get(id=request.GET.get('club'))
         elif request.method == 'POST':
             club = Club.objects.get(id=request.data['club'])
+
+        join = None
         try:
             join = Join.objects.get(user=user, club=club)
         except join.DoesNotExist:
@@ -29,7 +31,7 @@ class JoinDetailPermission(permissions.BasePermission):
         club = obj.club
         try:
             join = Join.objects.get(user=user, club=club)
-        except join.DoesNotExist:
+        except Join.DoesNotExist:
             return False
 
         if request.method in ('GET', 'DELETE'):

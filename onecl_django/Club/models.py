@@ -16,6 +16,7 @@ class Club(models.Model):
     master = models.ForeignKey(CustomUser, related_name='owing_clubs', on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, related_name='clubs', on_delete=models.SET_NULL, null=True)
     dept = models.ForeignKey(Dept, related_name='clubs', on_delete=models.SET_NULL, null=True)
+    apply_message = models.CharField(max_length=2000, default='welcome')
 
     class Meta:
         ordering = ['name']
