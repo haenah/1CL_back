@@ -1,9 +1,6 @@
 from rest_framework import permissions, generics, status
 from rest_framework.response import Response
-
-
 from .permissions import *
-
 from .serializers import JoinSerializer
 from Join.models import Join
 from Club.models import Club
@@ -53,7 +50,7 @@ class AuthLevelAPI(generics.ListCreateAPIView):
 
 
 class MyClubList(generics.ListCreateAPIView):
-    # serializer_class = JoinSerializer
+    serializer_class = JoinSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
@@ -61,12 +58,7 @@ class MyClubList(generics.ListCreateAPIView):
         return Join.objects.filter(user=user)
 
     def get(self, request, *args, **kwargs):
-        result = []
-        user = CustomUser.objects.get(username=self.request.user.username)
-        join_set = Join.objects.filter(user=user)
-        for join in join_set:
-            result.append(join.club)
-        return Response(result, status=status.HTTP_200_OK)
+        return self.list(request, *args, **kwargs)
 
 
 class JoinDetail(generics.RetrieveUpdateDestroyAPIView):

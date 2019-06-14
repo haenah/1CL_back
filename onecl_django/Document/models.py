@@ -7,7 +7,7 @@ from Club.models import Club
 
 class DocumentType(models.Model):
     name = models.CharField(max_length=20)
-    club = models.ForeignKey(Club, related_name='types', on_delete=models.CASCADE, blank=True)
+    club = models.ForeignKey(Club, related_name='types', on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Document(models.Model):
