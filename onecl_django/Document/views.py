@@ -53,4 +53,10 @@ class DocumentTypeList(generics.ListCreateAPIView):
         return self.list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save()
+        type = DocumentType.objects.get(name=self.request.data['type'])
+        serializer.save(type=type)
+
+
+class DocumentTypeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DocumentType.objects.exclude(club=None)
+    serializer_class = DocumentSerializer
