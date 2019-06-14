@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Club.apps.ClubConfig',
     'Join.apps.JoinConfig',
     'Image.apps.ImageConfig',
+    'Document.apps.DocumentConfig',
     'rest_framework',
     'knox',
     'corsheaders',

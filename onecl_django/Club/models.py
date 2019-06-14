@@ -13,9 +13,9 @@ class Category(models.Model):
 
 class Club(models.Model):
     name = models.CharField(max_length=20)
-    master = models.ForeignKey(CustomUser, related_name='owing_club', on_delete=models.SET_NULL, null=True)
-    category = models.ForeignKey(Category, related_name='club', on_delete=models.SET_NULL, null=True)
-    dept = models.ForeignKey(Dept, related_name='club', on_delete=models.SET_NULL, null=True)
+    master = models.ForeignKey(CustomUser, related_name='owing_clubs', on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, related_name='clubs', on_delete=models.SET_NULL, null=True)
+    dept = models.ForeignKey(Dept, related_name='clubs', on_delete=models.SET_NULL, null=True)
 
     class Meta:
         ordering = ['name']
