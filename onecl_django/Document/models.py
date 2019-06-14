@@ -7,7 +7,7 @@ from Club.models import Club
 
 class DocumentType(models.Model):
     name = models.CharField(max_length=20)
-    club = models.ForeignKey(Club, related_name='types', on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, related_name='types', on_delete=models.CASCADE, blank=True)
 
 
 class Document(models.Model):
@@ -20,3 +20,4 @@ class Document(models.Model):
 
     class Meta:
         ordering = ['-date', 'title', 'content', 'owner__name']
+

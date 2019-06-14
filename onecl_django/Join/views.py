@@ -1,6 +1,7 @@
 from rest_framework import permissions, generics, status
 from rest_framework.response import Response
 
+
 from .permissions import *
 
 from .serializers import JoinSerializer
@@ -60,11 +61,11 @@ class MyClubList(generics.ListCreateAPIView):
         return Join.objects.filter(user=user)
 
     def get(self, request, *args, **kwargs):
-        result = {}
+        result = []
         user = CustomUser.objects.get(username=self.request.user.username)
         join_set = Join.objects.filter(user=user)
-        for id in join_set:
-            result += Club.objects.get(id=id)
+        for join in join_set:
+            result.append(join.club)
         return Response(result, status=status.HTTP_200_OK)
 
 

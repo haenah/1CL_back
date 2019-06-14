@@ -17,7 +17,7 @@ class ClubSerializer(serializers.ModelSerializer):
         instance.master = validated_data.get('master', instance.master)
         instance.category = validated_data.get('category', instance.category)
         instance.dept = validated_data.get('dept', instance.dept)
-        instance.dept = validated_data.get('dept', instance.apply_message)
+        instance.apply_message = validated_data.get('apply_message', instance.apply_message)
         instance.save()
         return instance
 

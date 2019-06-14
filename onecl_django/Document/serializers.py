@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Document
+from .models import Document, DocumentType
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -19,3 +19,17 @@ class DocumentSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
+class DocumentTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentType
+        fields = ('id', 'name', 'club')
+
+    def create(self, validated_data):
+        return DocumentType.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.club = validated_data.get('club', instance.club)
+        instance.save()
+        return instance

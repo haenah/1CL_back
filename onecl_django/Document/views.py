@@ -1,5 +1,5 @@
+from django.db.models import Q
 from rest_framework import permissions, generics
-
 from .serializers import DocumentSerializer
 from .models import Document, DocumentType
 from User.models import CustomUser
@@ -42,6 +42,13 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, DocumentDetailPermission, )
 
 
-# class DocumentTypeList(generics.ListCreateAPIView):
-#     def get_queryset(self):
-#         club =
+class DocumentTypeList(generics.ListCreateAPIView):
+    def get_queryset(self):
+        club = self.request.query_params.get('club')
+        return DocumentType.objects.filter(Q(club=club) | Q(club == ''))
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save()
