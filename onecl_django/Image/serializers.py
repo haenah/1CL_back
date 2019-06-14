@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import ImageModel, FileModel
 
 class ImageUploadSerializer(serializers.ModelSerializer):
-    club = serializers.ReadOnlyField(source='Club.id')
+    # club = serializers.ReadOnlyField(source='Club.id')
 
     class Meta:
         model = ImageModel

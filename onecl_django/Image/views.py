@@ -9,25 +9,31 @@ class uploadImageAPI(generics.ListCreateAPIView):
     serializer_class = ImageUploadSerializer
     queryset = ImageModel.objects.all()
 
-    # def post(self, request, *args, **kwargs):
-    #
-    #     clubID = request.POST.get(['clubID'])
-    #     club = Club.objects.filter(id=clubID)
-    #     newImage = ImageModel(image=self.request.FILES['upload'], club=club)
-    #     newImage.save()
-    #
-    #     return Response(
-    #         {
-    #             "image": ImageUploadSerializer(
-    #                 self.request.FILES['upload'], context=self.get_serializer_context()
-    #             ).data,
-    #         }
-    #     )
+    def post(self, request, *args, **kwargs):
 
-    def perform_create(self, serializer):
-        user = CustomUser.objects.get(username=self.request.user.username)
-        club = Club.objects.get(id=self.request.GET.get('id'))
-        serializer.save(user=user, club=club, name=self.request.FILES['file'].name)
+        clubID = request.GET.get('clubID')
+        club = Club.objects.get(id=clubID)
+        newImage = ImageModel(image=self.request.FILES['upload'], club=club, name=self.request.FILES['upload'].name)
+        newImage.save()
+
+        return Response(
+            {
+                "image": ImageUploadSerializer(
+                    self.request.FILES['upload'], context=self.get_serializer_context()
+                ).data,
+            }
+        )
+
+    def get_queryset(self):
+        club = self.request.GET.get('clubID')
+        if club is None:
+            return ImageModel.objects.all()
+        return ImageModel.objects.filter(club=club)
+
+    # def perform_create(self, serializer):
+    #     user = CustomUser.objects.get(username=self.request.user.username)
+    #     club = Club.objects.get(id=self.request.GET.get('id'))
+    #     serializer.save(user=user, club=club, name=self.request.FILES['file'].name)
 
 class uploadFileAPI(generics.ListCreateAPIView):
     serializer_class = FileUploadSerializer
