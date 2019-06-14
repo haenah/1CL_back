@@ -6,7 +6,6 @@ from User.models import CustomUser
 from Club.models import Club
 from .permissions import *
 
-type , content, title, date, owner, club
 
 # Create your views here.
 class DocumentList(generics.ListCreateAPIView):
@@ -19,7 +18,6 @@ class DocumentList(generics.ListCreateAPIView):
         content = self.request.GET.get('content')
         owner = self.request.GET.get('owner')
 
-        # queryset 을 정규표현식으로 쪼개야긋다...
 
 class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Document.objects.all()
