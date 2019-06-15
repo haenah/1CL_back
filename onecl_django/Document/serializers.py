@@ -40,8 +40,8 @@ class DocumentTypeSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    owner_name = serializers.ReadOnlyField(source='join.user.name')
-    owner_username = serializers.ReadOnlyField(source='join.user.username')
+    owner_name = serializers.ReadOnlyField(source='owner.name')
+    owner_username = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Comment

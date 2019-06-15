@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework import permissions, generics, status
-from .serializers import DocumentSerializer, DocumentTypeSerializer
-from .models import Document, DocumentType
+from .serializers import *
+from .models import *
 from User.models import CustomUser
 from .permissions import *
 from rest_framework.views import APIView
@@ -55,7 +55,10 @@ class DocumentDetail(APIView):
         document.view += 1
         document.save()
         serializer = DocumentSerializer(document)
-        return Response(serializer.data)
+        result = {}
+        result['document'] = serializer.data
+        result['comments'] = CommentSerializer(Comment.objects.filter(document=document.id), many=True).data
+        return Response(result)
 
     def put(self, request, pk, format=None):
         document = self.get_object(pk)
@@ -90,3 +93,19 @@ class DocumentTypeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DocumentType.objects.exclude(club=None)
     serializer_class = DocumentSerializer
     permission_classes = (permissions.IsAuthenticated, DocumentTypeDetailPermission)
+
+
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = (permissions.IsAuthenticated, CommentListPermission, )
+
+    def perform_create(self, serializer):
+        owner = CustomUser.objects.get(username=self.request.user.username)
+        serializer.save(owner=owner)
+
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = (permissions.IsAuthenticated, CommentDetailPermission, )

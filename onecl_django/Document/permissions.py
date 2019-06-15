@@ -76,3 +76,23 @@ class DocumentTypeDetailPermission(permissions.BasePermission):
             return False
 
         return join.auth_level > 1
+
+
+class CommentListPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return True
+        if request.method == 'POST':
+            document = Club.objects.get(id=request.data['document'])
+            user = CustomUser.objects.get(username=request.user.username)
+            try:
+                join = Join.objects.get(club=document.club.id, user=user)
+            except Join.DoesNotExist:
+                return False
+            return True
+
+
+class CommentDetailPermission(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        owner = CustomUser.objects.get(username=request.user.username)
+        return obj.owner == owner
