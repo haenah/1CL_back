@@ -93,7 +93,10 @@ class DelegateMaster(generics.GenericAPIView):
         newMaster = Join.objects.get(user__username=request.data['username'], club=request.data['club'])
         previousMaster.auth_level = 1
         newMaster.auth_level = 3
+        club = Club.objects.get(id=request.data['club'])
+        club.master = newMaster
         previousMaster.save()
         newMaster.save()
+        club.save()
         body = {"message":"delegation completed."}
         return Response(body, status=status.HTTP_200_OK)
