@@ -14,7 +14,7 @@ class DocumentType(models.Model):
 class Document(models.Model):
     title = models.CharField(max_length=30)
     content = models.CharField(max_length=3000)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     type = models.ForeignKey(DocumentType, related_name='documents_type', on_delete=models.CASCADE, null=True)
     owner = models.ForeignKey(CustomUser, related_name='documents_owner', on_delete=models.CASCADE)
     club = models.ForeignKey(Club, related_name='documents_club', on_delete=models.CASCADE, null=True)
@@ -26,7 +26,7 @@ class Document(models.Model):
 
 class Comment(models.Model):
     content = models.CharField(max_length=150)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(CustomUser, related_name='comment', on_delete=models.CASCADE, null=True)
     document = models.ForeignKey(Document, related_name='comments', on_delete=models.CASCADE)
 
