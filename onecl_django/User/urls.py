@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegistrationAPI, LoginAPI, UserAPI, DuplicateEmailAPI, DuplicateUserIdAPI, CodeVerificationAPI
+from .views import RegistrationAPI, LoginAPI, DuplicateEmailAPI, DuplicateUserIdAPI, CodeVerificationAPI
 
 urlpatterns = [
     path('register/', RegistrationAPI.as_view()),
