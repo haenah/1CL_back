@@ -14,7 +14,7 @@ class JoinSerializer(serializers.ModelSerializer):
         return Join.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.auth_level = validated_data['auth_level']
+        instance.auth_level = validated_data.get('auth_level', instance.auth_level)
         instance.save()
         return instance
 
@@ -26,4 +26,4 @@ class MyClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Join
-        fields = ('id', 'user', 'club', 'club_name', 'auth_level')
+        fields = ('id', 'user', 'club_id', 'club_name', 'auth_level')

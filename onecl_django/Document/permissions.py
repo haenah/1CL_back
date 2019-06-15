@@ -2,6 +2,7 @@ from rest_framework import permissions
 from User.models import CustomUser
 from Club.models import Club
 from Join.models import Join
+from .models import DocumentType
 
 
 class DocumentListPermission(permissions.BasePermission):
@@ -21,8 +22,10 @@ class DocumentListPermission(permissions.BasePermission):
             return True
 
         if request.method == 'POST':
-            if request.data['type'] == 'notice':
-                return join.auth_level > 1
+            doc_type = DocumentType.objects.get(id=request.data['type'])
+            if doc_type.club is None:
+                if doc_type.name == 'notice':
+                    return join.auth_level > 1
             return True
 
 
