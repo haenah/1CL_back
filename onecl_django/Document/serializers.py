@@ -45,7 +45,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'content', 'owner_name', 'owner_username', 'document')
+        fields = ('id', 'date', 'content', 'owner_name', 'owner_username', 'document')
 
     def create(self, valdated_data):
         return Comment.objects.create(**valdated_data)
