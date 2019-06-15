@@ -13,7 +13,6 @@ class JoinListPermission(permissions.BasePermission):
         elif request.method == 'POST':
             club = Club.objects.get(id=request.data['club'])
 
-        join = None
         try:
             join = Join.objects.get(user=user, club=club)
         except Join.DoesNotExist:

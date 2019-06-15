@@ -4,7 +4,7 @@ from .models import Document, DocumentType
 
 class DocumentSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.name')
-    view = serializers.ReadOnlyField(source='view')
+    view = serializers.ReadOnlyField()
     type_name = serializers.ReadOnlyField(source='type.name')
 
     class Meta:
