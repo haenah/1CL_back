@@ -31,4 +31,4 @@ class Comment(models.Model):
     document = models.ForeignKey(Document, related_name='comments', on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['-date']
+        ordering = ['date']
