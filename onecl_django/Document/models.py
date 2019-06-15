@@ -17,7 +17,7 @@ class Document(models.Model):
     type = models.ForeignKey(DocumentType, related_name='documents_type', on_delete=models.SET_NULL, null=True)
     owner = models.ForeignKey(CustomUser, related_name='documents_owner', on_delete=models.CASCADE)
     club = models.ForeignKey(Club, related_name='documents_club', on_delete=models.CASCADE)
+    view = models.IntegerField()
 
     class Meta:
         ordering = ['-date', 'title', 'content', 'owner__name']
-
