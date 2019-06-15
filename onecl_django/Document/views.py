@@ -70,9 +70,10 @@ class DocumentDetail(APIView):
         document.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class DocumentTypeList(generics.ListCreateAPIView):
     serializer_class = DocumentTypeSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, DocumentTypeListPermission)
 
     def get_queryset(self):
         club = self.request.query_params.get('club')
@@ -88,4 +89,4 @@ class DocumentTypeList(generics.ListCreateAPIView):
 class DocumentTypeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DocumentType.objects.exclude(club=None)
     serializer_class = DocumentSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, DocumentTypeDetailPermission)

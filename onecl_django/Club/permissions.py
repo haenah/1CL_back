@@ -7,5 +7,5 @@ class IsMasterOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        master = CustomUser.objects.get(username=self.request.user.username)
+        master = CustomUser.objects.get(username=request.user.username)
         return master == obj.master

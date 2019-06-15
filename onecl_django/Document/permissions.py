@@ -46,3 +46,33 @@ class DocumentDetailPermission(permissions.BasePermission):
             return obj.owner == user or join.auth_level >= 2
 
 
+class DocumentTypeListPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = CustomUser.objects.get(username=request.user.username)
+        club = None
+        if request.method == 'GET':
+            club = Club.objects.get(id=request.GET.get('club'))
+        elif request.method == 'POST':
+            club = Club.objects.get(id=request.data['club'])
+        try:
+            join = Join.objects.get(user=user, club=club)
+        except Join.DoesNotExist:
+            return False
+
+        if request.method == 'GET':
+            return True
+
+        if request.method == 'POST':
+            return join.auth_level > 1
+
+
+class DocumentTypeDetailPermission(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        user = CustomUser.objects.get(username=request.user.username)
+        club = obj.club
+        try:
+            join = Join.objects.get(user=user, club=club)
+        except Join.DoesNotExist:
+            return False
+
+        return join.auth_level > 1
