@@ -1,10 +1,12 @@
 from django.db.models import Q
-from rest_framework import permissions, generics, mixins
+from rest_framework import permissions, generics, status
 from .serializers import DocumentSerializer, DocumentTypeSerializer
 from .models import Document, DocumentType
 from User.models import CustomUser
-from Club.models import Club
 from .permissions import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 
 # Create your views here.
 class DocumentList(generics.ListCreateAPIView):
@@ -40,11 +42,33 @@ class DocumentList(generics.ListCreateAPIView):
         serializer.save(owner=owner)
 
 
-class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Document.objects.all()
-    serializer_class = DocumentSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+class DocumentDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Document.objects.get(pk=pk)
+        except Document.DoesNotExist:
+            body = {"message": "Requested objected does not exist."}
+            return Response(body, status=status.HTTP_404_NOT_FOUND)
 
+    def get(self, request, pk, format=None):
+        document = self.get_object(pk)
+        document.view += 1
+        document.save()
+        serializer = DocumentSerializer(document)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        document = self.get_object(pk)
+        serializer = DocumentSerializer(document, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        document = self.get_object(pk)
+        document.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DocumentTypeList(generics.ListCreateAPIView):
     serializer_class = DocumentTypeSerializer
