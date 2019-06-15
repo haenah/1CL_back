@@ -68,6 +68,7 @@ class ClubDetail(APIView):
         serializer = ClubSerializer(club, data=new_data)
         if serializer.is_valid():
             serializer.save()
+            print('haha')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
