@@ -34,11 +34,16 @@ class JoinList(generics.ListCreateAPIView):
 
 
 class AuthLevelAPI(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get(self, request, *args, **kwargs):
         club = Club.objects.get(id=request.GET.get('club'))
-        user = CustomUser.objects.get(username=request.user.username)
+        try:
+            user = CustomUser.objects.get(username=request.user.username)
+        except Exception:
+            body = {"auth_level": -1}
+            return Response(body, status=status.HTTP_200_OK)
+
 
         try:
             join = Join.objects.get(user=user, club=club)
