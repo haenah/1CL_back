@@ -47,4 +47,5 @@ class IsMaster(permissions.BasePermission):
         elif request.method == 'POST':
             club = Club.objects.get(id=request.data['club'])
         user = CustomUser.objects.get(username=request.user.username)
-        return club.master == user
+        join = Join.objects.get(club=club, user=user)
+        return join.auth_level == 3

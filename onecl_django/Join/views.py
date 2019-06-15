@@ -78,7 +78,7 @@ class SearchUserAPI(generics.ListAPIView):
     permission_classes = (IsMaster, )
 
     def get_queryset(self):
-        return Join.objects.filter(club=self.request.GET.get('club')).filter(user__username=self.request.GET.get('name'))
+        return Join.objects.filter(club=self.request.GET.get('club')).filter(user__name__startswith=self.request.GET.get('name'))
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -90,7 +90,7 @@ class DelegateMaster(generics.GenericAPIView):
 
     def put(self, request, *args, **kwargs):
         previousMaster = Join.objects.get(user__username=request.user.username, club=request.data['club'])
-        newMaster = Join.objects.get(user__username=request.data['username'], club=request.data['club'])
+        newMaster = Join.objects.get(user__username=request.data['user name'], club=request.data['club'])
         previousMaster.auth_level = 1
         newMaster.auth_level = 3
         previousMaster.save()
