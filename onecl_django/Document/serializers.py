@@ -4,6 +4,7 @@ from .models import Document, DocumentType
 
 class DocumentSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.name')
+    club = serializers.ReadOnlyField(source='club.id')
 
     class Meta:
         model = Document
