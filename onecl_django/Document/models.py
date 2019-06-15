@@ -27,7 +27,7 @@ class Document(models.Model):
 class Comment(models.Model):
     content = models.CharField(max_length=150)
     date = models.DateTimeField(auto_now=True)
-    join = models.ForeignKey(Join, related_name='comment', on_delete=models.CASCADE)
+    owner = models.ForeignKey(CustomUser, related_name='comment', on_delete=models.CASCADE)
     document = models.ForeignKey(Document, related_name='comments', on_delete=models.CASCADE)
 
     class Meta:

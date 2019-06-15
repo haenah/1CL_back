@@ -56,10 +56,10 @@ class ClubDetail(APIView):
         club = self.get_object(pk)
         new_data = request.data
 
-        if request.data['intro'] is not None:
+        if request.data.get('intro') is not None:
             new_data['name'] = club.name
-            new_data['category'] = club.category
-            new_data['dept'] = club.dept
+            new_data['category'] = club.category.name
+            new_data['dept'] = club.dept.name
             new_data['apply_message'] = club.apply_message
 
         else:
@@ -68,7 +68,6 @@ class ClubDetail(APIView):
         serializer = ClubSerializer(club, data=new_data)
         if serializer.is_valid():
             serializer.save()
-            print('haha')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
