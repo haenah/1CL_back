@@ -1,14 +1,16 @@
 from rest_framework import serializers
 from .models import Join
+from User.models import CustomUser
 
 
 class JoinSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user_username = serializers.ReadOnlyField(source='user.username')
+    user_name = serializers.ReadOnlyField(source='user.name')
     club = serializers.ReadOnlyField(source='club.id')
 
     class Meta:
         model = Join
-        fields = ('id', 'user', 'club', 'auth_level')
+        fields = ('id', 'user_username', 'user_name', 'club', 'auth_level')
 
     def create(self, validated_data):
         return Join.objects.create(**validated_data)

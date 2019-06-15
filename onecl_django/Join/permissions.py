@@ -38,3 +38,10 @@ class JoinDetailPermission(permissions.BasePermission):
 
         if request.method == 'PUT':
             return join.auth_level > 2
+
+
+class IsMaster(permissions.BasePermission):
+    def has_permission(self, request, view):
+        club = Club.objects.get(id=request.data['club'])
+        user = CustomUser.objects.get(username=request.user.username)
+        return club.master == user

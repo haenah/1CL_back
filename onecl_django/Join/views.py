@@ -1,7 +1,7 @@
 from rest_framework import permissions, generics, status
 from rest_framework.response import Response
 from .permissions import *
-from .serializers import JoinSerializer, MyClubSerializer
+from .serializers import *
 from Join.models import Join
 from Club.models import Club
 from User.models import CustomUser
@@ -73,3 +73,27 @@ class JoinDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, JoinDetailPermission)
 
 
+class SearchUserAPI(generics.ListAPIView):
+    serializer_class = JoinSerializer
+    permission_classes = (IsMaster, )
+
+    def get_queryset(self):
+        return Join.objects.filter(club=self.request.data['club']).filter(user__username=self.request.data['name'])
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class DelegateMaster(generics.GenericAPIView):
+    serializer_class = JoinSerializer
+    permission_classes = (IsMaster, )
+
+    def put(self, request, *args, **kwargs):
+        previousMaster = Join.objects.get(user__username=request.user.username, club=request.data['club'])
+        newMaster = Join.objects.get(user__username=request.data['username'], club=request.data['club'])
+        previousMaster.auth_level = 1
+        newMaster.auth_level = 3
+        previousMaster.save()
+        newMaster.save()
+        body = {"message":"delegation completed."}
+        return Response(body, status=status.HTTP_200_OK)
