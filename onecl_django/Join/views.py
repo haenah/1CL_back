@@ -78,7 +78,7 @@ class SearchUserAPI(generics.ListAPIView):
     permission_classes = (IsMaster, )
 
     def get_queryset(self):
-        return Join.objects.filter(club=self.request.data['club']).filter(user__username=self.request.data['name'])
+        return Join.objects.filter(club=self.request.GET.get('club')).filter(user__username=self.request.GET.get('name'))
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
