@@ -2,8 +2,6 @@ from django.db.models import Q
 from rest_framework import permissions, generics
 from .serializers import DocumentSerializer, DocumentTypeSerializer
 from .models import Document, DocumentType
-from User.models import CustomUser
-from Club.models import Club
 from .permissions import *
 
 
@@ -18,22 +16,28 @@ class DocumentList(generics.ListCreateAPIView):
         content = self.request.GET.get('content')
         owner = self.request.GET.get('owner')
         type = self.request.GET.get('type')
+
+        result = Document.objects.filter(club=club)
+
+        if type != '전체':
+            result = result.filter(type=type)
         if title is not None:
-            return Document.objects.filter(club=club, title=title)
+            result = result.filter(title=title)
         if content is not None:
-            return Document.objects.filter(club=club, content=content)
+            result = result.filter(content=content)
         if owner is not None:
             user = CustomUser.objects.get(username=owner)
-            return Document.objects.filter(club=club, owner=user)
-        if type is not None:
-            return Document.objects.filter(club=club, type=type)
+            result = result.filter(owner=user)
+
+        return result
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         owner = CustomUser.objects.get(username=self.request.user.username)
-        serializer.save(owner=owner)
+        type = DocumentType.objects.get(id=self.request.data['type'])
+        serializer.save(owner=owner, type=type)
 
 
 class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -53,7 +57,6 @@ class DocumentTypeList(generics.ListCreateAPIView):
         return self.list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        type = DocumentType.objects.get(name=self.request.data['type'])
         serializer.save(type=type)
 
 

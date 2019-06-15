@@ -1,7 +1,7 @@
 from rest_framework import permissions, generics, status
 from rest_framework.response import Response
 from .permissions import *
-from .serializers import JoinSerializer
+from .serializers import JoinSerializer, MyClubSerializer
 from Join.models import Join
 from Club.models import Club
 from User.models import CustomUser
@@ -50,7 +50,7 @@ class AuthLevelAPI(generics.ListCreateAPIView):
 
 
 class MyClubList(generics.ListCreateAPIView):
-    serializer_class = JoinSerializer
+    serializer_class = MyClubSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):

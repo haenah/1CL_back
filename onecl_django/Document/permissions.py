@@ -14,7 +14,7 @@ class DocumentListPermission(permissions.BasePermission):
             club = Club.objects.get(id=request.data['club'])
         try:
             join = Join.objects.get(user=user, club=club)
-        except join.DoesNotExist:
+        except Join.DoesNotExist:
             return False
 
         if request.method == 'GET':
@@ -22,7 +22,7 @@ class DocumentListPermission(permissions.BasePermission):
 
         if request.method == 'POST':
             if request.data['type'] == 'notice':
-                return join.auth_level >= 1
+                return join.auth_level > 1
             return True
 
 
