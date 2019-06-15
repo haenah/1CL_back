@@ -43,6 +43,8 @@ class DocumentList(generics.ListCreateAPIView):
 
 
 class DocumentDetail(APIView):
+    permission_classes = (permissions.IsAuthenticated, DocumentDetailPermission, )
+
     def get_object(self, pk):
         try:
             return Document.objects.get(pk=pk)
