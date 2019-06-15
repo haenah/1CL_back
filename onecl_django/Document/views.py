@@ -1,5 +1,6 @@
 from django.db.models import Q
 from rest_framework import permissions, generics
+from rest_framework.views import APIView
 from .serializers import DocumentSerializer, DocumentTypeSerializer
 from .models import Document, DocumentType
 from User.models import CustomUser
@@ -38,8 +39,7 @@ class DocumentList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         owner = CustomUser.objects.get(username=self.request.user.username)
-        type = DocumentType.objects.get(id=self.request.data['type'])
-        serializer.save(owner=owner, type=type)
+        serializer.save(owner=owner)
 
 
 class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -50,6 +50,7 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class DocumentTypeList(generics.ListCreateAPIView):
     serializer_class = DocumentTypeSerializer
+    permission_classes = (permissions.IsAuthenticated, )
 
     def get_queryset(self):
         club = self.request.query_params.get('club')
@@ -65,3 +66,4 @@ class DocumentTypeList(generics.ListCreateAPIView):
 class DocumentTypeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DocumentType.objects.exclude(club=None)
     serializer_class = DocumentSerializer
+    permission_classes = (permissions.IsAuthenticated, )

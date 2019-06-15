@@ -4,19 +4,21 @@ from .models import Document, DocumentType
 
 class DocumentSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.name')
-    club = serializers.ReadOnlyField(source='club.id')
+    view = serializers.ReadOnlyField(source='view')
+    type_name = serializers.ReadOnlyField(source='type.name')
 
     class Meta:
         model = Document
-        fields = ('id', 'title', 'content', 'date', 'owner', 'club')
+        fields = ('id', 'title', 'type', 'type_name', 'content', 'date', 'owner', 'club', 'view')
 
     def create(self, validated_data):
         return Document.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.title = validated_data.get('name', instance.title)
-        instance.content = validated_data.get('master', instance.content)
-        instance.type = validated_data.get('category', instance.type)
+        instance.club = validated_data.get('club', instance.club)
+        instance.title = validated_data.get('title', instance.title)
+        instance.content = validated_data.get('content', instance.content)
+        instance.type = validated_data.get('type', instance.type)
         instance.save()
         return instance
 
