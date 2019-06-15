@@ -90,7 +90,7 @@ class DelegateMaster(generics.GenericAPIView):
 
     def put(self, request, *args, **kwargs):
         previousMaster = Join.objects.get(user__username=request.user.username, club=request.data['club'])
-        newMaster = Join.objects.get(user__username=request.data['user name'], club=request.data['club'])
+        newMaster = Join.objects.get(user__username=request.data['username'], club=request.data['club'])
         previousMaster.auth_level = 1
         newMaster.auth_level = 3
         previousMaster.save()
