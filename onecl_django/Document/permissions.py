@@ -2,7 +2,7 @@ from rest_framework import permissions
 from User.models import CustomUser
 from Club.models import Club
 from Join.models import Join
-from .models import DocumentType
+from .models import DocumentType, Document
 
 
 class DocumentListPermission(permissions.BasePermission):
@@ -83,10 +83,10 @@ class CommentListPermission(permissions.BasePermission):
         if request.method == 'GET':
             return True
         if request.method == 'POST':
-            document = Club.objects.get(id=request.data['document'])
+            document = Document.objects.get(id=request.data['document'])
             user = CustomUser.objects.get(username=request.user.username)
             try:
-                join = Join.objects.get(club=document.club.id, user=user)
+                join = Join.objects.get(club=document.club, user=user)
             except Join.DoesNotExist:
                 return False
             return True
