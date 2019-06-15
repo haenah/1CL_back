@@ -1,12 +1,10 @@
 from django.db.models import Q
-from rest_framework import permissions, generics
-from rest_framework.views import APIView
+from rest_framework import permissions, generics, mixins
 from .serializers import DocumentSerializer, DocumentTypeSerializer
 from .models import Document, DocumentType
 from User.models import CustomUser
 from Club.models import Club
 from .permissions import *
-
 
 # Create your views here.
 class DocumentList(generics.ListCreateAPIView):
@@ -45,7 +43,7 @@ class DocumentList(generics.ListCreateAPIView):
 class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
-    permission_classes = (permissions.IsAuthenticated, DocumentDetailPermission, )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
 
 class DocumentTypeList(generics.ListCreateAPIView):
