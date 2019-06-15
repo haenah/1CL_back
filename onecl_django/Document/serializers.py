@@ -1,15 +1,16 @@
 from rest_framework import serializers
-from .models import Document, DocumentType
+from .models import Document, DocumentType, Comment
 
 
 class DocumentSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.name')
+    owner_name = serializers.ReadOnlyField(source='owner.name')
+    owner_username = serializers.ReadOnlyField(source='owner.username')
     view = serializers.ReadOnlyField()
     type_name = serializers.ReadOnlyField(source='type.name')
 
     class Meta:
         model = Document
-        fields = ('id', 'title', 'type', 'type_name', 'content', 'date', 'owner', 'club', 'view')
+        fields = ('id', 'title', 'type', 'type_name', 'content', 'date', 'owner_name', 'owner_username', 'club', 'view')
 
     def create(self, validated_data):
         return Document.objects.create(**validated_data)
@@ -34,5 +35,22 @@ class DocumentTypeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.club = validated_data.get('club', instance.club)
+        instance.save()
+        return instance
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    owner_name = serializers.ReadOnlyField(source='join.user.name')
+    owner_username = serializers.ReadOnlyField(source='join.user.username')
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'content', 'owner_name', 'owner_username', 'document')
+
+    def create(self, valdated_data):
+        return Comment.objects.create(**valdated_data)
+
+    def update(self, instance, validated_data):
+        instance.content = validated_data.get('content', instance.content)
         instance.save()
         return instance
