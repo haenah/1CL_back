@@ -54,15 +54,18 @@ class ClubDetail(APIView):
 
     def put(self, request, pk, format=None):
         club = self.get_object(pk)
+        new_data = request.data
 
         if request.data['intro'] is not None:
-            club.intro = request.data['intro']
+            new_data['name'] = club.name
+            new_data['category'] = club.category
+            new_data['dept'] = club.dept
+            new_data['apply_message'] = club.apply_message
+
         else:
-            club.name = request.data['name']
-            club.category = request.data['category']
-            club.dept = request.data['dept']
-            club.apply_message = request.data['apply_message']
-        serializer = ClubSerializer(club)
+            new_data['intro'] = club.intro
+
+        serializer = ClubSerializer(club, data=new_data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
