@@ -53,24 +53,23 @@ class ClubDetail(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        fixed = self.get_object(pk)
         club = self.get_object(pk)
-
-        print(request.data)
+        new_data = request.data
 
         if request.data['intro'] is not None:
-            fixed.intro = request.data['intro']
-        else:
-            fixed.name = request.data['name']
-            fixed.category = request.data['category']
-            fixed.dept = request.data['dept']
-            fixed.apply_message = request.data['apply_message']
+            new_data['name'] = club.name
+            new_data['category'] = club.category
+            new_data['dept'] = club.dept
+            new_data['apply_message'] = club.apply_message
 
-        serializer = ClubSerializer(club, data=fixed)
+        else:
+            new_data['intro'] = club.intro
+
+        serializer = ClubSerializer(club, data=new_data)
         if serializer.is_valid():
             serializer.save()
+            print('haha')
             return Response(serializer.data)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
