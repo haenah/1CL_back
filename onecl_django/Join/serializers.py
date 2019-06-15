@@ -20,7 +20,7 @@ class JoinSerializer(serializers.ModelSerializer):
 
 
 class MyClubSerializer(serializers.ModelSerializer):
-    user_us = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.username')
     club_id = serializers.ReadOnlyField(source='club.id')
     club_name = serializers.ReadOnlyField(source='club.name')
 
