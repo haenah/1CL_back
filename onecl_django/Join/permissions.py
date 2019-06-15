@@ -44,7 +44,7 @@ class IsMaster(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'GET':
             club = Club.objects.get(id=request.GET.get('club'))
-        elif request.method == 'POST':
+        elif request.method in ('POST', 'PUT'):
             club = Club.objects.get(id=request.data['club'])
         user = CustomUser.objects.get(username=request.user.username)
         join = Join.objects.get(club=club, user=user)
