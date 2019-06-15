@@ -2,13 +2,15 @@ from django.db.models import Q
 from rest_framework import permissions, generics
 from .serializers import DocumentSerializer, DocumentTypeSerializer
 from .models import Document, DocumentType
+from User.models import CustomUser
+from Club.models import Club
 from .permissions import *
 
 
 # Create your views here.
 class DocumentList(generics.ListCreateAPIView):
     serializer_class = DocumentSerializer
-    permission_classes = (permissions.IsAuthenticated, DocumentListPermission )
+    # permission_classes = (permissions.IsAuthenticated, DocumentListPermission)
 
     def get_queryset(self):
         club = self.request.GET.get('club')

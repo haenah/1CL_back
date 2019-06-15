@@ -4,7 +4,7 @@ from .models import Join
 
 class JoinSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    club = serializers.ReadOnlyField(source='club')
+    club = serializers.ReadOnlyField(source='club.id')
 
     class Meta:
         model = Join

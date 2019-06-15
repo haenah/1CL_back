@@ -65,6 +65,6 @@ class JoinDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Join.objects.all()
     serializer_class = JoinSerializer
 
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, JoinDetailPermission)
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly, JoinDetailPermission)
 
 
