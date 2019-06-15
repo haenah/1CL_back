@@ -11,7 +11,7 @@ from .permissions import *
 # Create your views here.
 class DocumentList(generics.ListCreateAPIView):
     serializer_class = DocumentSerializer
-    # permission_classes = (permissions.IsAuthenticated, DocumentListPermission)
+    permission_classes = (permissions.IsAuthenticated, DocumentListPermission)
 
     def get_queryset(self):
         club = self.request.GET.get('club')
@@ -22,7 +22,7 @@ class DocumentList(generics.ListCreateAPIView):
 
         result = Document.objects.filter(club=club)
 
-        if type != '전체':
+        if type != 'all':
             result = result.filter(type=type)
         if title is not None:
             result = result.filter(title=title)
