@@ -40,6 +40,8 @@ class ClubDetail(APIView):
     """
     Retrieve, update or delete a snippet instance.
     """
+    permission_classes = (IsMasterOrReadOnly, )
+
     def get_object(self, pk):
         try:
             return Club.objects.get(pk=pk)
