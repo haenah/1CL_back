@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Join.apps.JoinConfig',
     'Image.apps.ImageConfig',
     'Document.apps.DocumentConfig',
+    'Message.apps.MessageConfig',
     'rest_framework',
     'knox',
     'corsheaders',

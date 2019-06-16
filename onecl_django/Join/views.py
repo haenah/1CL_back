@@ -1,10 +1,12 @@
 from rest_framework import permissions, generics, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .permissions import *
 from .serializers import *
 from Join.models import Join
 from Club.models import Club
 from User.models import CustomUser
+from Message.models import Message
 
 
 # Create your views here.
@@ -31,6 +33,9 @@ class JoinList(generics.ListCreateAPIView):
         user = CustomUser.objects.get(username=self.request.data['user'])
         club = Club.objects.get(id=self.request.data['club'])
         Join.objects.create(user=user, club=club)
+        message_title = '<strong>'+club.name+'</strong> 동아리 가입이 승인되었습니다.'
+        message_content = message_title+' 동아리 가입을 진심으로 환영합니다!'
+        Message.objects.create(club=club, receiver=user, title=message_title, content=message_content)
 
 
 class AuthLevelAPI(generics.ListCreateAPIView):
@@ -73,6 +78,48 @@ class JoinDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, JoinDetailPermission)
 
 
+class DocumentDetail(APIView):
+    permission_classes = (permissions.IsAuthenticated, JoinDetailPermission)
+
+    def get_object(self, pk):
+        try:
+            return Join.objects.get(pk=pk)
+        except Join.DoesNotExist:
+            body = {"message": "Requested objected does not exist."}
+            return Response(body, status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, pk, format=None):
+        join = self.get_object(pk)
+        serializer = JoinSerializer(join)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        join = self.get_object(pk)
+        previous_level = 0
+        modified_level = 0
+        if join.auth_level == 1:
+            previous_level = '일반 회원'
+        elif join.auth_level == 2:
+            previous_level = '임원'
+        if request.data['auth_level'] == 1:
+            modified_level = '일반 회원'
+        elif join.auth_level == 2:
+            modified_level = '임원'
+        serializer = JoinSerializer(join, data=request.data)
+        if serializer.is_valid():
+            message_title = '회원님의 <strong>'+join.club.name+'</strong> 동아리의 회원 등급이 변경되었습니다.'
+            message_content = '회원님의 <strong>'+join.club.name+'</strong> 동아리의 회원 등급이 <strong>'+previous_level+'</strong> 에서 <strong>'+modified_level+'</strong> 으로 변경되었습니다.'
+            Message.objects.create(club=join.club, receiver=join.user, title=message_title, content=message_content)
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        document = self.get_object(pk)
+        document.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class SearchUserAPI(generics.ListAPIView):
     serializer_class = JoinSerializer
     permission_classes = (IsMaster, )
@@ -98,5 +145,12 @@ class DelegateMaster(generics.GenericAPIView):
         previousMaster.save()
         newMaster.save()
         club.save()
+
+        message_title = '<strong>'+club.name+'</strong> 동아리의 회장 권한이 위임되었습니다.'
+        message_content = '<strong>'+club.name+'</strong 동아리의 회장 권한이 <strong>'+previousMaster.name+'</strong> 에서 <strong>'+newMaster.name+'</strong> 으로 위임되었습니다.'
+        members = Join.objects.filter(club=club)
+        for member in members:
+            Message.objects.create(club=club, receiver=member.user, title=message_title, content=message_content)
+
         body = {"message":"delegation completed."}
         return Response(body, status=status.HTTP_200_OK)

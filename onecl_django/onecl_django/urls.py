@@ -25,5 +25,6 @@ urlpatterns = [
     path('upload/', include('Image.urls')),
     path('join/', include('Join.urls')),
     path('document/', include('Document.urls')),
-    path('api-auth', include('rest_framework.urls'))
+    path('api-auth', include('rest_framework.urls')),
+    path('message/', include('Message.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
