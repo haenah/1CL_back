@@ -94,7 +94,7 @@ class DelegateMaster(generics.GenericAPIView):
         previousMaster.auth_level = 1
         newMaster.auth_level = 3
         club = Club.objects.get(id=request.data['club'])
-        club.master = newMaster
+        club.master = newMaster.user
         previousMaster.save()
         newMaster.save()
         club.save()

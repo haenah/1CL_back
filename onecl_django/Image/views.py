@@ -43,6 +43,14 @@ class uploadFileAPI(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         thisUser = CustomUser.objects.get(username=request.user.username)
         club = Club.objects.get(id=request.GET.get('clubID'))
+
+        uploadedList = FileModel.objects.filter(club=club).filter(user=thisUser)
+
+        for file in uploadedList:
+            if file.club == club and file.user.username == request.user.username:
+                body = {"message": "duplicate uploader"}
+                return Response(body, status.HTTP_400_BAD_REQUEST)
+
         newFile = FileModel(file=self.request.FILES['file'], name=self.request.FILES['file'].name, user=thisUser, club=club)
         newFile.save()
 

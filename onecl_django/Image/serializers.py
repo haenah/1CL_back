@@ -13,10 +13,11 @@ class ImageUploadSerializer(serializers.ModelSerializer):
 
 class FileUploadSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    user_name = serializers.ReadOnlyField(source='user.name')
 
     class Meta:
         model = FileModel
-        fields = ("id", "name", "file", "user", "club")
+        fields = ("id", "name", "file", "user", "user_name", "club")
 
     def create(self, validated_data):
         return FileModel.objects.create(**validated_data)
