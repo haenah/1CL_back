@@ -71,14 +71,7 @@ class MyClubList(generics.ListCreateAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class JoinDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Join.objects.all()
-    serializer_class = JoinSerializer
-
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, JoinDetailPermission)
-
-
-class DocumentDetail(APIView):
+class JoinDetail(APIView):
     permission_classes = (permissions.IsAuthenticated, JoinDetailPermission)
 
     def get_object(self, pk):
@@ -95,6 +88,19 @@ class DocumentDetail(APIView):
 
     def put(self, request, pk, format=None):
         join = self.get_object(pk)
+        previous_level = 0
+        modified_level = 0
+        if join.auth_level == 1:
+            previous_level = '일반 회원'
+        elif join.auth_level == 2:
+            previous_level = '임원'
+        if request.data['auth_level'] == 1:
+            modified_level = '일반 회원'
+        elif request.data['auth_level'] == 2:
+            modified_level = '임원'
+        message_title = '회원님의 <strong>' + join.club.name + '</strong> 동아리의 회원 등급이 변경되었습니다.'
+        message_content = '회원님의 <strong>' + join.club.name + '</strong> 동아리의 회원 등급이 <strong>' + previous_level + '</strong> 에서 <strong>' + modified_level + '</strong> 으로 변경되었습니다.'
+        Message.objects.create(club=join.club, receiver=join.user, title=message_title, content=message_content)
         serializer = JoinSerializer(join, data=request.data)
         if serializer.is_valid():
             serializer.save()
