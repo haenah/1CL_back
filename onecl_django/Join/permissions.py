@@ -13,10 +13,9 @@ class JoinListPermission(permissions.BasePermission):
         elif request.method == 'POST':
             club = Club.objects.get(id=request.data['club'])
 
-        join = None
         try:
             join = Join.objects.get(user=user, club=club)
-        except join.DoesNotExist:
+        except Join.DoesNotExist:
             return False
 
         if request.method == 'GET':
@@ -39,3 +38,13 @@ class JoinDetailPermission(permissions.BasePermission):
 
         if request.method == 'PUT':
             return join.auth_level > 2
+
+
+class IsMaster(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            club = Club.objects.get(id=request.GET.get('club'))
+        elif request.method in ('POST', 'PUT'):
+            club = Club.objects.get(id=request.data['club'])
+        user = CustomUser.objects.get(username=request.user.username)
+        return club.master == user

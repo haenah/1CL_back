@@ -1,4 +1,6 @@
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from .serializers import (ClubSerializer, CategorySerializer, DeptSerializer)
 from .models import (Club, Category, Dept)
@@ -34,10 +36,47 @@ class ClubList(generics.ListCreateAPIView):
         Join.objects.create(user=master, club=serializer.save(master=master), auth_level=3)
 
 
-class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Club.objects.all()
-    serializer_class = ClubSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMasterOrReadOnly, )
+class ClubDetail(APIView):
+    """
+    Retrieve, update or delete a snippet instance.
+    """
+    permission_classes = (IsMasterOrReadOnly, )
+
+    def get_object(self, pk):
+        try:
+            return Club.objects.get(pk=pk)
+        except Club.DoesNotExist:
+            body = {"message":"Requested club does not exist."}
+            return Response(body, status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, pk, format=None):
+        club = self.get_object(pk)
+        serializer = ClubSerializer(club)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        club = self.get_object(pk)
+        new_data = request.data
+
+        if request.data.get('intro') is not None:
+            new_data['name'] = club.name
+            new_data['category'] = club.category.name
+            new_data['dept'] = club.dept.name
+            new_data['apply_message'] = club.apply_message
+
+        else:
+            new_data['intro'] = club.intro
+
+        serializer = ClubSerializer(club, data=new_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CategoryList(generics.ListAPIView):
@@ -49,5 +88,4 @@ class CategoryList(generics.ListAPIView):
 class DeptList(generics.ListAPIView):
     queryset = Dept.objects.all()
     serializer_class = DeptSerializer
-
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
