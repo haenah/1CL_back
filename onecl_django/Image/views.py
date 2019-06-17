@@ -95,11 +95,11 @@ class SnippetDetail(APIView):
 
     def delete(self, request, pk, format=None):
         file = self.get_object(pk)
-        if request.data['apply'] == 'true':
+        if request.GET.get['apply'] == 'true':
             message_title = '<strong>' + file.club.name + '</strong> 동아리 가입이 승인되었습니다.'
             message_content = message_title + ' 동아리 가입을 진심으로 환영합니다!'
             Message.objects.create(club=file.club, receiver=file.user, title=message_title, content=message_content)
-        elif request.data['apply'] == 'false':
+        elif request.GET.get['apply'] == 'false':
             message_title = '<strong>' + file.club.name + '</strong> 동아리 가입이 반려되었습니다.'
             message_content = message_title + '함께하지 못하게 되어 죄송합니다.'
             Message.objects.create(club=file.club, receiver=file.user, title=message_title, content=message_content)
