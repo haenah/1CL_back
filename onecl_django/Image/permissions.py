@@ -14,5 +14,5 @@ class uploadFilePermission(permissions.BasePermission):
 
 class FileDetailPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        join = Join.objects.get(club=obj.club, user_username=request.user.username)
+        join = Join.objects.get(club=obj.club, user__username=request.user.username)
         return join.auth_level > 1
