@@ -42,8 +42,8 @@ class MessageDetail(APIView):
         return Response(body, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        document = self.get_object(pk)
-        document.delete()
+        message = self.get_object(pk)
+        message.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -51,11 +51,9 @@ class DeleteReadMessage(generics.ListAPIView):
     serializer_class = MessageSerializer
     permission_classes = (permissions.IsAuthenticated, )
 
-    def get_queryset(self):
-        return Message.objects.filter(receiver__username=self.request.user.username, read=True)
-
     def get(self, request, *args, **kwargs):
-        message_read = self.get_queryset()
+        user = CustomUser.objects.get(username=self.request.user.username)
+        message_read = Message.objects.filter(receiver=user, read=True)
         for message in message_read:
             message.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
