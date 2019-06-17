@@ -65,12 +65,7 @@ class uploadFileAPI(generics.ListCreateAPIView):
         return FileModel.objects.filter(club=club)
 
 
-class FileDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-    queryset = FileModel.objects.all()
-    serializer_class = FileUploadSerializer
-
-
-class SnippetDetail(APIView):
+class FileDetail(APIView):
     """
     Retrieve, update or delete a snippet instance.
     """
