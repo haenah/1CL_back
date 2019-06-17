@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from .serializers import ImageUploadSerializer, FileUploadSerializer
 from User.models import CustomUser
 from Club.models import Club
+from Message.models import Message
+from rest_framework.views import APIView
+from rest_framework import permissions
+from .permissions import *
 
 
 class uploadImageAPI(generics.ListCreateAPIView):
@@ -36,9 +40,11 @@ class uploadImageAPI(generics.ListCreateAPIView):
     #     club = Club.objects.get(id=self.request.GET.get('id'))
     #     serializer.save(user=user, club=club, name=self.request.FILES['file'].name)
 
+
 class uploadFileAPI(generics.ListCreateAPIView):
     serializer_class = FileUploadSerializer
     queryset = FileModel.objects.all()
+    permission_classes = (permissions.IsAuthenticated, uploadFilePermission )
 
     def post(self, request, *args, **kwargs):
         thisUser = CustomUser.objects.get(username=request.user.username)
@@ -62,6 +68,38 @@ class uploadFileAPI(generics.ListCreateAPIView):
             return FileModel.objects.all()
         return FileModel.objects.filter(club=club)
 
-class FileDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-    queryset = FileModel.objects.all()
-    serializer_class = FileUploadSerializer
+
+class FileDetail(APIView):
+    permission_classes = (permissions.IsAuthenticated, FileDetailPermission )
+
+    def get_object(self, pk):
+        try:
+            return FileModel.objects.get(pk=pk)
+        except FileModel.DoesNotExist:
+            raise Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, pk, format=None):
+        file = self.get_object(pk)
+        serializer = FileUploadSerializer(file)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        file = self.get_object(pk)
+        serializer = FileUploadSerializer(file, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        file = self.get_object(pk)
+        if request.GET.get('apply') == 'true':
+            message_title = '<strong>' + file.club.name + '</strong> 동아리 가입이 승인되었습니다.'
+            message_content = message_title + ' 동아리 가입을 진심으로 환영합니다!'
+            Message.objects.create(club=file.club, receiver=file.user, title=message_title, content=message_content)
+        elif request.GET.get('apply') == 'false':
+            message_title = '<strong>' + file.club.name + '</strong> 동아리 가입이 반려되었습니다.'
+            message_content = message_title + '함께하지 못하게 되어 죄송합니다.'
+            Message.objects.create(club=file.club, receiver=file.user, title=message_title, content=message_content)
+        file.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

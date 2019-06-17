@@ -33,9 +33,6 @@ class JoinList(generics.ListCreateAPIView):
         user = CustomUser.objects.get(username=self.request.data['user'])
         club = Club.objects.get(id=self.request.data['club'])
         Join.objects.create(user=user, club=club)
-        message_title = '<strong>'+club.name+'</strong> 동아리 가입이 승인되었습니다.'
-        message_content = message_title+' 동아리 가입을 진심으로 환영합니다!'
-        Message.objects.create(club=club, receiver=user, title=message_title, content=message_content)
 
 
 class AuthLevelAPI(generics.ListCreateAPIView):
