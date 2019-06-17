@@ -105,11 +105,11 @@ class DocumentDetail(APIView):
             modified_level = '일반 회원'
         elif join.auth_level == 2:
             modified_level = '임원'
+        message_title = '회원님의 <strong>' + join.club.name + '</strong> 동아리의 회원 등급이 변경되었습니다.'
+        message_content = '회원님의 <strong>' + join.club.name + '</strong> 동아리의 회원 등급이 <strong>' + previous_level + '</strong> 에서 <strong>' + modified_level + '</strong> 으로 변경되었습니다.'
+        Message.objects.create(club=join.club, receiver=join.user, title=message_title, content=message_content)
         serializer = JoinSerializer(join, data=request.data)
         if serializer.is_valid():
-            message_title = '회원님의 <strong>'+join.club.name+'</strong> 동아리의 회원 등급이 변경되었습니다.'
-            message_content = '회원님의 <strong>'+join.club.name+'</strong> 동아리의 회원 등급이 <strong>'+previous_level+'</strong> 에서 <strong>'+modified_level+'</strong> 으로 변경되었습니다.'
-            Message.objects.create(club=join.club, receiver=join.user, title=message_title, content=message_content)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
