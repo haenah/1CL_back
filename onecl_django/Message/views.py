@@ -47,7 +47,10 @@ class MessageDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class DeleteReadMessage(generics.GenericAPIView):
+class DeleteReadMessage(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
     def get_queryset(self):
         return Message.objects.filter(receiver__username=self.request.user.username, read=True)
 
@@ -56,5 +59,3 @@ class DeleteReadMessage(generics.GenericAPIView):
         for message in message_read:
             message.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-

@@ -9,7 +9,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ('id', 'club_id', 'club_name', 'receiver', 'title', 'content', 'date')
+        fields = ('id', 'club_id', 'club_name', 'receiver', 'title', 'content', 'date', 'read')
 
     def create(self, validated_data):
         return Message.objects.create(**validated_data)
