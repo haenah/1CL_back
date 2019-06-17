@@ -103,7 +103,7 @@ class DocumentDetail(APIView):
             previous_level = '임원'
         if request.data['auth_level'] == 1:
             modified_level = '일반 회원'
-        elif join.auth_level == 2:
+        elif request.data['auth_level'] == 2:
             modified_level = '임원'
         message_title = '회원님의 <strong>' + join.club.name + '</strong> 동아리의 회원 등급이 변경되었습니다.'
         message_content = '회원님의 <strong>' + join.club.name + '</strong> 동아리의 회원 등급이 <strong>' + previous_level + '</strong> 에서 <strong>' + modified_level + '</strong> 으로 변경되었습니다.'
