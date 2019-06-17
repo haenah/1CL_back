@@ -147,7 +147,7 @@ class DelegateMaster(generics.GenericAPIView):
         club.save()
 
         message_title = '<strong>'+club.name+'</strong> 동아리의 회장 권한이 위임되었습니다.'
-        message_content = '<strong>'+club.name+'</strong 동아리의 회장 권한이 <strong>'+previousMaster.user.name+'</strong> 에서 <strong>'+newMaster.user.name+'</strong> 으로 위임되었습니다.'
+        message_content = '<strong>'+club.name+'</strong> 동아리의 회장 권한이 <strong>'+previousMaster.user.name+'</strong> 에서 <strong>'+newMaster.user.name+'</strong> 으로 위임되었습니다.'
         members = Join.objects.filter(club=club)
         for member in members:
             Message.objects.create(club=club, receiver=member.user, title=message_title, content=message_content)
