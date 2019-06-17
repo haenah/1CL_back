@@ -6,6 +6,8 @@ from User.models import CustomUser
 from Club.models import Club
 from Message.models import Message
 from rest_framework.views import APIView
+from rest_framework import permissions
+from .permissions import *
 
 
 class uploadImageAPI(generics.ListCreateAPIView):
@@ -38,9 +40,11 @@ class uploadImageAPI(generics.ListCreateAPIView):
     #     club = Club.objects.get(id=self.request.GET.get('id'))
     #     serializer.save(user=user, club=club, name=self.request.FILES['file'].name)
 
+
 class uploadFileAPI(generics.ListCreateAPIView):
     serializer_class = FileUploadSerializer
     queryset = FileModel.objects.all()
+    permission_classes = (permissions.IsAuthenticated, uploadFilePermission )
 
     def post(self, request, *args, **kwargs):
         thisUser = CustomUser.objects.get(username=request.user.username)
@@ -66,9 +70,8 @@ class uploadFileAPI(generics.ListCreateAPIView):
 
 
 class FileDetail(APIView):
-    """
-    Retrieve, update or delete a snippet instance.
-    """
+    permission_classes = (permissions.IsAuthenticated, FileDetailPermission )
+
     def get_object(self, pk):
         try:
             return FileModel.objects.get(pk=pk)
@@ -90,11 +93,11 @@ class FileDetail(APIView):
 
     def delete(self, request, pk, format=None):
         file = self.get_object(pk)
-        if request.GET.get['apply'] == 'true':
+        if request.GET.get('apply') == 'true':
             message_title = '<strong>' + file.club.name + '</strong> 동아리 가입이 승인되었습니다.'
             message_content = message_title + ' 동아리 가입을 진심으로 환영합니다!'
             Message.objects.create(club=file.club, receiver=file.user, title=message_title, content=message_content)
-        elif request.GET.get['apply'] == 'false':
+        elif request.GET.get('apply') == 'false':
             message_title = '<strong>' + file.club.name + '</strong> 동아리 가입이 반려되었습니다.'
             message_content = message_title + '함께하지 못하게 되어 죄송합니다.'
             Message.objects.create(club=file.club, receiver=file.user, title=message_title, content=message_content)
