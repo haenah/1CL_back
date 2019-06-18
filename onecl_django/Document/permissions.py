@@ -24,7 +24,7 @@ class DocumentListPermission(permissions.BasePermission):
         if request.method == 'POST':
             doc_type = DocumentType.objects.get(id=request.data['type'])
             if doc_type.club is None:
-                if doc_type.name == 'notice':
+                if doc_type.name == '공지게시판':
                     return join.auth_level > 1
             return True
 

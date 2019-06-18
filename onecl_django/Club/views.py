@@ -58,6 +58,11 @@ class ClubDetail(APIView):
         club = self.get_object(pk)
         new_data = request.data
 
+        print(club.name)
+        print(club.category)
+        print(club.dept)
+        print(club.apply_message)
+
         if request.data.get('intro') is not None:
             new_data['name'] = club.name
             new_data['category'] = club.category.name
